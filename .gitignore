@@ -1,0 +1,16 @@
+*.nii.gz
+*.nii
+.idea
+*.zip
+*.pkl
+*.log
+*.ipynb
+*.pyc
+*.json
+*.hdr
+*.img
+temp/
+prediction.nii.gz
+toy_data/
+venv/
+.nfs*
