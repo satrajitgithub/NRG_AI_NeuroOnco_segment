@@ -140,6 +140,9 @@ def plot_prediction_3d(data, modalities, segs, seg_preds, ax_title, outfile):
             # rows for data modalities
             if m < data.shape[1]: 
                 plt.imshow(arr, cmap='gray', vmin=None, vmax=None)
+                # Tumor outline overlay on scan
+                pred_mask = np.fliplr(np.rot90(show_arrays[b, data.shape[1]]))
+                add_polygon_mask_outline_to_ax(ax, pred_mask, fc = to_rgba('m', 0), ec = to_rgba('m', 1), lw = 1)
             # rows for gt and predicted seg
             else:
                 arr = arr.astype(int)
