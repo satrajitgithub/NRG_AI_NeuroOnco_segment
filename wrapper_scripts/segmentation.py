@@ -18,6 +18,7 @@ from src.data import reslice_image_set, resize
 import src.metrics
 from src.visualize import plot_prediction_3d, get_zoomed_data
 from src.prediction import run_validation_case_segmentation
+from src.refinement_heuristic import refine_seg
 
 def load_old_model(model_file, n_labels):
     metrics_seg = src.metrics.partial(src.metrics.dice_coef_multilabel, numLabels=n_labels)
@@ -97,6 +98,7 @@ if __name__ == '__main__':
         raise ValueError(f"Modality list = {modality_list}, could not find a suitable model..")
 
     prediction_image = run_validation_case_segmentation(affine, test_data, model, config['labels'])
+    prediction_image = refine_seg(prediction_image, modality_list)
 
     # Only if pred nonzero, go into following loop
     if np.count_nonzero(prediction_image.get_fdata()):
