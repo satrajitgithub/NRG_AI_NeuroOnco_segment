@@ -6,6 +6,7 @@ import nibabel as nib
 from keras.models import load_model
 from keras_contrib.layers import InstanceNormalization
 import numpy as np
+import tensorflow as tf
 from functools import partial
 from pathlib import Path
 from medpy.metric.binary import dc, hd, asd, assd, ravd
@@ -48,6 +49,8 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
 
     print(args)
+
+    print("Checking if gpu is available",tf.test.is_gpu_available())
 
     # Setting the basepath of the folder inside which everything will be stored
     subject_dir = os.path.join('/input')
