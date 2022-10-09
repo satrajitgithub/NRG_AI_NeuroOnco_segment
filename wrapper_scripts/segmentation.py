@@ -38,11 +38,9 @@ def load_old_model(model_file, n_labels):
 
     return load_model(model_file, custom_objects=custom_objects)
 
-# def main(config, session_name, evaluate = True, radiomics = True):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Code for running Segmentation on GBM')
-    parser.add_argument('-s', '--session_name', type=str, required=False, default='session', help='Session name as <string>')
     parser.add_argument('--evaluate', default=False, action='store_true', help="plot segmentation results per case + evaluate metrics (DSC/Hausdorff)")
     parser.add_argument('--radiomics', default=False, action='store_true', help="Calculate radiomic features using pyradiomics")
 
@@ -107,7 +105,11 @@ if __name__ == '__main__':
     if np.count_nonzero(prediction_image.get_fdata()):
         pred_upsample = resize(prediction_image, original_dim, interpolation="nearest")
         nib.save(pred_upsample, os.path.join(output_dir, 'prediction.nii.gz'))
-    #
+        
+        # Calculate radiomic features
+        if args['radiomics']:
+            calculate_radiomic_features_per_session(subject_dir, output_dir)
+
         # Plot and/or evaluate segmentation for QC
         if args["evaluate"]:
             # data: (1,#modalities,H,W,C), gt: (1,1,H,W,C), pred: (1,1,H,W,C)
@@ -134,8 +136,6 @@ if __name__ == '__main__':
             data, gt, pred = get_zoomed_data(data, gt, pred, zoom_out_factor = 10)
             plot_prediction_3d(data, modality_list, gt, pred, ax_title=ax_title, outfile=os.path.join(output_dir, f'seg_zoomed.png'))
 
-        if args['radiomics']:
-            calculate_radiomic_features_per_session(args["session_name"], subject_dir, output_dir, modality_list)
     else:
         print("Segmentation all zeros, please recheck the input scans.")
 

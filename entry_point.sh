@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ~~~~~~~~~~~~~~~~~~~~ Set paths ~~~~~~~~~~~~~~~~~~~~~~~~
-echo "Updated: 01/28/2022"
+echo "Updated: 10/06/2022"
 # export TERM=xterm
 export SCRIPT_ROOT=/NRG_AI_NeuroOnco_segment
 

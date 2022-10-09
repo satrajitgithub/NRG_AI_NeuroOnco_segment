@@ -1,6 +1,6 @@
 nibabel==3.1.1
 numpy
-pyradiomics
+pyradiomics==3.0.1
 scikit_image==0.15.0
 nilearn==0.7.0
 matplotlib==3.3.4

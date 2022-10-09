@@ -34,16 +34,16 @@ def get_submask_dict(classes_present, mask_arr):
 
             submask_dict[tumor_label] = submask
 
-    # # Besides unique regions (1,2,4), we add Whole Tumor or WT region (1+2+4) which is the entire tumor
-    # submask_WT = copy.deepcopy(mask_arr)
-    # submask_WT[submask_WT > 0] = 1
-    # submask_dict['WT'] = submask_WT
+    # Besides unique regions (1,2,4), we add Whole Tumor or WT region (1+2+4) which is the entire tumor
+    submask_WT = copy.deepcopy(mask_arr)
+    submask_WT[submask_WT > 0] = 1
+    submask_dict['WT'] = submask_WT
 
-    # # Besides unique regions (1,2,4), we add Tumor Core or TC region (1+4) which is the entire tumor excluding edema
-    # submask_TC = copy.deepcopy(mask_arr)
-    # submask_TC[(submask_TC == 1) | (submask_TC == 4)] = 1
-    # submask_TC[(submask_TC != 1) & (submask_TC != 4)] = 0
-    # submask_dict['TC'] = submask_TC
+    # Besides unique regions (1,2,4), we add Tumor Core or TC region (1+4) which is the entire tumor excluding edema
+    submask_TC = copy.deepcopy(mask_arr)
+    submask_TC[(submask_TC == 1) | (submask_TC == 4)] = 1
+    submask_TC[(submask_TC != 1) & (submask_TC != 4)] = 0
+    submask_dict['TC'] = submask_TC
 
     return submask_dict
 
@@ -58,12 +58,13 @@ def func_shape(submask_dict):
     
         print(f"Calculating shape features for: tumor_label = {submask_label}")
 
-        kwargs_3d = {'binWidth': 1, 'interpolator': None, 'resampledPixelSpacing': None, 'verbose': False, 'force2D': False}
+        # kwargs_3d = {'binWidth': 1, 'interpolator': None, 'resampledPixelSpacing': None, 'verbose': False, 'force2D': False}
 
         image = sitk.GetImageFromArray(submask)
         mask = sitk.GetImageFromArray(submask)
 
-        extractor = featureextractor.RadiomicsFeatureExtractor(**kwargs_3d)
+        # extractor = featureextractor.RadiomicsFeatureExtractor(**kwargs_3d)
+        extractor = featureextractor.RadiomicsFeatureExtractor()
         extractor.disableAllFeatures()
 
         extractor.enableFeatureClassByName('shape')
@@ -83,7 +84,7 @@ def func_texture(submask_dict, session_path, modality_list):
     Extracts all firstorder; shape; glcm; glrlm; glszm; gldm; ngtdm features
     """
     
-    kwargs_3d = {'binWidth': 0.5, 'interpolator': None, 'resampledPixelSpacing': None, 'verbose': False, 'force2D': False}
+    kwargs_3d = {'binWidth': 1, 'interpolator': None, 'resampledPixelSpacing': None, 'verbose': False, 'force2D': False}
 
     df_per_tumor_label_per_modality = []
 
@@ -99,7 +100,8 @@ def func_texture(submask_dict, session_path, modality_list):
             img_arr = z_score(img_arr)
             image = sitk.GetImageFromArray(img_arr.get_fdata())
 
-            extractor = featureextractor.RadiomicsFeatureExtractor(**kwargs_3d)
+            # extractor = featureextractor.RadiomicsFeatureExtractor(**kwargs_3d)
+            extractor = featureextractor.RadiomicsFeatureExtractor()
             extractor.disableAllFeatures()
             for featureclass in ['firstorder', 'glcm', 'glrlm', 'glszm', 'gldm', 'ngtdm']:
                 extractor.enableFeatureClassByName(featureclass)
@@ -114,7 +116,7 @@ def func_texture(submask_dict, session_path, modality_list):
     return df_all_tumor_label_all_modality
 
 
-def calculate_radiomics(session_path, session_name, path_to_mask, target_path, tumor_labels, modality_list):
+def calculate_radiomics(session_path, path_to_mask, target_path, tumor_labels, modality_list):
 
     mask_arr = nib.load(path_to_mask).get_fdata()
     mask_arr_class_distribution = check_unique_elements(mask_arr)
@@ -150,16 +152,19 @@ def calculate_radiomics(session_path, session_name, path_to_mask, target_path, t
     df_radiomics = pd.concat(df_radiomics_list, axis=1)
 
     # Add session name as index
-    df_radiomics.insert(loc=0, column='session', value=session_name)
-    df_radiomics.to_csv(os.path.join(target_path, f'radiomics_{session_name}.csv'), index=False)
+    df_radiomics.to_csv(os.path.join(target_path, f'radiomics.csv'), index=False)
 
 
-def calculate_radiomic_features_per_session(session_name, session_path, output_path, modality_list):
+def calculate_radiomic_features_per_session(session_path, output_path):
     tumor_labels = {1: 'NC', 2: 'ED', 4: 'EC'}
     
     print("[RADIOMICS] Received following arguments for calculating radiomics:")
+
+    present_scans = glob.glob(os.path.abspath(os.path.join(session_path, "*stripped.nii.gz")))
+    modality_list = [i.split(os.sep)[-1].split('_')[0] for i in present_scans]
+    print(f"Found modalities = {modality_list}")
+
     args_for_calculate_radiomics = {"session_path": session_path,
-                                    "session_name": session_name,
                                     "path_to_mask": glob.glob(os.path.abspath(os.path.join(output_path, 'prediction.nii.gz')))[0],
                                     "target_path": output_path,
                                     "tumor_labels": tumor_labels,
