@@ -8,10 +8,10 @@ This project is created by the Neuroinformatics Research Group ([NRG](https://nr
 ## Citation
 If you use I3CR-WANO in your work, please cite:
 
-_Satrajit Chakrabarty, Syed Amaan Abidi, Mina Mousa, Mahati Mokkarala, Isabelle Hren, Divya Yadav, Matthew Kelsey, Pamela LaMontagne, John Wood, Michael Adams, Yuzhuo Su, Sherry Thorpe, Caroline Chung, Aristeidis Sotiras, Daniel S. Marcus, **"Integrative Imaging Informatics for Cancer Research: Workflow Automation for Neuro-oncology (I3CR-WANO)."** https://arxiv.org/abs/2210.03151 (2022)._
+_Satrajit Chakrabarty, Syed Amaan Abidi, Mina Mousa, Mahati Mokkarala, Isabelle Hren, Divya Yadav, Matthew Kelsey, Pamela LaMontagne, John Wood, Michael Adams, Yuzhuo Su, Sherry Thorpe, Caroline Chung, Aristeidis Sotiras, Daniel S. Marcus, **"Integrative Imaging Informatics for Cancer Research: Workflow Automation for Neuro-oncology (I3CR-WANO)."** JCO Clinical Cancer Informatics, no. 7, e2200177, 2023. Available: https://doi.org/10.1200/CCI.22.00177._
 
 ## Contact
-Please open a Github issue or send your questions to satrajit.chakrabarty@wustl.edu if you run into any errors.
+Please open a Github issue or send your questions to schakrabarty@mdanderson.org if you run into any errors.
 
 ## Disclaimer
 **Only intended for research purposes and not for clinical use.**
